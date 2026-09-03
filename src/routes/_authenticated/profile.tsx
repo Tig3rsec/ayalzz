@@ -88,7 +88,9 @@ function ProfilePage() {
         .upload(path, file, { upsert: true, contentType: file.type });
       if (uploadError) throw uploadError;
 
-      const { error } = await supabase.from("profiles").update({ avatar_url: path }).eq("id", user.id);
+      const { error } = await supabase
+        .from("profiles")
+        .upsert({ id: user.id, avatar_url: path }, { onConflict: "id" });
       if (error) throw error;
 
       setAvatarPath(path);
@@ -109,11 +111,10 @@ function ProfilePage() {
     try {
       const { error } = await supabase
         .from("profiles")
-        .update({
-          display_name: displayName.trim() || null,
-          exam_track: examTrack || null,
-        })
-        .eq("id", user.id);
+        .upsert(
+          { id: user.id, display_name: displayName.trim() || null, exam_track: examTrack || null },
+          { onConflict: "id" },
+        );
       if (error) throw error;
       await queryClient.invalidateQueries({ queryKey: ["profile", user.id] });
       await queryClient.invalidateQueries({ queryKey: ["profile-page", user.id] });
