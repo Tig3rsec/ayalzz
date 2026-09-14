@@ -10,6 +10,7 @@ import { BookRow, BookTile } from "@/components/BookTile";
 import { BookDetail } from "@/components/BookDetail";
 import { AdminBooks } from "@/components/AdminBooks";
 import { Logo } from "@/components/Logo";
+import { LibraryLoader } from "@/components/LibraryLoader";
 import type { Book } from "@/components/BookCard";
 import { useAuth, useIsAdmin } from "@/hooks/useAuth";
 import { useDisplayName } from "@/hooks/useDisplayName";
@@ -199,7 +200,7 @@ function Home() {
             </section>
 
             {booksQuery.isLoading ? (
-              <p className="text-sm text-ink-soft">Opening the library…</p>
+              <LibraryLoader />
             ) : filtered.length === 0 ? (
               <div className="rounded-xl bg-paper p-6 text-sm text-ink-soft ring-1 ring-border">
                 Nothing matches yet.{" "}
