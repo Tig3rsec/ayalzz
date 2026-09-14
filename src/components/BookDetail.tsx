@@ -19,20 +19,36 @@ export function BookDetail({
 }) {
   const [busy, setBusy] = useState(false);
   const [link, setLink] = useState<ResolvedLink | null>(null);
+  const [opened, setOpened] = useState(false);
+  const [closing, setClosing] = useState(false);
   const cover = useCoverUrl(book?.cover_url);
 
   useEffect(() => {
     setLink(null);
     setBusy(false);
+    setClosing(false);
+    if (!book) {
+      setOpened(false);
+      return;
+    }
+    const frame = requestAnimationFrame(() => setOpened(true));
+    return () => cancelAnimationFrame(frame);
   }, [book?.id]);
+
+  function requestClose() {
+    if (closing) return;
+    setClosing(true);
+    setOpened(false);
+    window.setTimeout(onClose, 520);
+  }
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape") requestClose();
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
+  }, [closing, onClose]);
 
   if (!book) return null;
 
@@ -64,23 +80,32 @@ export function BookDetail({
 
   return (
     <div
-      className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-ink/60 p-3 backdrop-blur-sm sm:p-4"
-      onClick={onClose}
+      className={`book-detail-backdrop fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-ink/60 p-3 backdrop-blur-sm sm:p-4 ${opened ? "is-open" : ""}`}
+      onClick={requestClose}
       role="presentation"
     >
       <div
-        className="my-6 w-full max-w-3xl overflow-hidden rounded-2xl bg-paper ring-1 ring-border"
+        className={`book-detail-panel my-6 w-full max-w-3xl overflow-hidden rounded-2xl bg-paper ring-1 ring-border ${opened ? "is-open" : ""}`}
         onClick={(event) => event.stopPropagation()}
       >
         <div className="grid gap-4 p-4 sm:grid-cols-[180px_1fr] sm:gap-6 sm:p-8">
-          <div className="relative mx-auto aspect-[2/3] w-32 overflow-hidden rounded-xl bg-gradient-to-br from-pine to-moss p-4 shadow-[0_16px_40px_-20px_rgba(0,0,0,0.7)] sm:mx-0 sm:w-auto">
-            {cover ? (
-              <img src={cover} alt={`${book.title} cover`} className="absolute inset-0 h-full w-full object-cover" />
-            ) : null}
-            {cover ? <div className="absolute inset-0 bg-gradient-to-t from-ink/80 to-transparent" /> : null}
-            <div className="relative">
-              <span className="label-mono text-cream/70">{book.track_code}</span>
-              <p className="mt-4 font-serif text-base leading-tight text-cream sm:mt-6 sm:text-xl">{book.title}</p>
+          <div className={`book-detail-stage mx-auto w-32 sm:mx-0 sm:w-auto ${opened ? "is-open" : ""}`}>
+            <div className="book-detail-volume aspect-[2/3]">
+              <div className="book-detail-page-block" aria-hidden="true" />
+              <div className="book-detail-endpaper bg-cream" aria-hidden="true">
+                <span className="font-serif text-ink/20">Ayal</span>
+              </div>
+              <div className="book-detail-cover overflow-hidden rounded-r-xl bg-gradient-to-br from-pine to-moss p-4">
+                {cover ? (
+                  <img src={cover} alt={`${book.title} cover`} className="absolute inset-0 h-full w-full object-cover" />
+                ) : null}
+                {cover ? <div className="absolute inset-0 bg-gradient-to-t from-ink/80 to-transparent" /> : null}
+                <div className="book-detail-cover-groove" aria-hidden="true" />
+                <div className="relative">
+                  <span className="label-mono text-cream/70">{book.track_code}</span>
+                  <p className="mt-4 font-serif text-base leading-tight text-cream sm:mt-6 sm:text-xl">{book.title}</p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -153,7 +178,7 @@ export function BookDetail({
                   {saved ? "Remove from shelf" : "Save to shelf"}
                 </button>
               ) : null}
-              <button onClick={onClose} className="py-2 text-sm text-ink-soft hover:text-ink sm:ml-auto">
+              <button onClick={requestClose} className="py-2 text-sm text-ink-soft hover:text-ink sm:ml-auto">
                 Close
               </button>
             </div>

@@ -129,3 +129,231 @@
   text-transform: uppercase;
   letter-spacing: 0.15em;
 }
+
+/* Book-only presentation: the surrounding Ayal interface remains unchanged. */
+.book-hitbox {
+  perspective: 900px;
+}
+
+.book-stage {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  transform-style: preserve-3d;
+}
+
+.book-volume {
+  position: relative;
+  width: calc(100% - 8px);
+  height: var(--book-height);
+  transform: rotateZ(var(--book-lean)) rotateY(-4deg);
+  transform-origin: 50% 100%;
+  transform-style: preserve-3d;
+  transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1), filter 700ms ease;
+  filter: drop-shadow(0 14px 12px color-mix(in oklch, var(--ink) 22%, transparent));
+}
+
+.book-hitbox:hover .book-volume,
+.book-hitbox:focus-visible .book-volume {
+  z-index: 20;
+  transform: translateY(-22px) translateZ(72px) rotateZ(0deg) rotateY(-10deg);
+  filter: drop-shadow(0 24px 18px color-mix(in oklch, var(--ink) 30%, transparent));
+}
+
+.book-cover {
+  position: absolute;
+  inset: 0;
+  border-radius: 3px 8px 8px 3px;
+  transform: translateZ(calc(var(--book-depth) / 2));
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  box-shadow: inset 1px 0 color-mix(in oklch, var(--cream) 45%, transparent),
+    inset -1px 0 color-mix(in oklch, var(--ink) 18%, transparent);
+  transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.book-hitbox:hover .book-cover,
+.book-hitbox:focus-visible .book-cover {
+  transform: translateZ(calc(var(--book-depth) / 2)) rotateY(-8deg);
+}
+
+.book-spine {
+  position: absolute;
+  inset-block: 1px;
+  left: 0;
+  width: var(--book-depth);
+  overflow: hidden;
+  transform: rotateY(-90deg) translateZ(calc(var(--book-depth) / 2));
+  transform-origin: left center;
+  border-radius: 3px 0 0 3px;
+}
+
+.book-spine-title {
+  position: absolute;
+  inset: 9px 1px;
+  overflow: hidden;
+  font-size: 7px;
+  line-height: 1;
+  writing-mode: vertical-rl;
+  text-overflow: ellipsis;
+}
+
+.book-pages {
+  position: absolute;
+  inset: 4px 2px 4px 4px;
+  border-radius: 2px 7px 7px 2px;
+  background: repeating-linear-gradient(to bottom, var(--paper) 0 2px, var(--border) 2px 3px);
+  transform: translateZ(calc(var(--book-depth) / -2));
+}
+
+.book-cover-groove,
+.book-detail-cover-groove {
+  position: absolute;
+  inset-block: 0;
+  left: 8px;
+  width: 2px;
+  background: color-mix(in oklch, var(--ink) 24%, transparent);
+  box-shadow: 2px 0 color-mix(in oklch, var(--cream) 18%, transparent);
+}
+
+.book-cover-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 10%, color-mix(in oklch, var(--cream) 22%, transparent) 42%, transparent 62%);
+  opacity: 0;
+  transform: translateX(-45%);
+  transition: opacity 500ms ease, transform 800ms ease;
+}
+
+.book-hitbox:hover .book-cover-sheen,
+.book-hitbox:focus-visible .book-cover-sheen {
+  opacity: 1;
+  transform: translateX(35%);
+}
+
+.book-shelf-rail {
+  position: relative;
+  perspective: 1400px;
+  background: linear-gradient(to bottom, transparent calc(100% - 27px), color-mix(in oklch, var(--cognac) 36%, var(--paper)) calc(100% - 27px), color-mix(in oklch, var(--pine) 48%, var(--cognac)) calc(100% - 20px), color-mix(in oklch, var(--ink) 15%, var(--cognac)) calc(100% - 17px), transparent calc(100% - 15px));
+  filter: drop-shadow(0 13px 9px color-mix(in oklch, var(--ink) 16%, transparent));
+}
+
+.book-detail-backdrop {
+  opacity: 0;
+  transition: opacity 520ms ease;
+}
+
+.book-detail-backdrop.is-open {
+  opacity: 1;
+}
+
+.book-detail-panel {
+  opacity: 0;
+  transform: translateY(30px) scale(0.94);
+  transition: opacity 600ms ease 120ms, transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.book-detail-panel.is-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.book-detail-stage {
+  perspective: 1100px;
+}
+
+.book-detail-volume {
+  position: relative;
+  transform: translateZ(-90px) rotateY(-24deg) scale(0.84);
+  transform-style: preserve-3d;
+  transition: transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.book-detail-stage.is-open .book-detail-volume {
+  transform: translateZ(0) rotateY(0) scale(1);
+}
+
+.book-detail-page-block,
+.book-detail-endpaper,
+.book-detail-cover {
+  position: absolute;
+  inset: 0;
+}
+
+.book-detail-page-block {
+  inset: 4px 3px 4px 6px;
+  border-radius: 2px 9px 9px 2px;
+  background: repeating-linear-gradient(to right, var(--paper) 0 3px, var(--border) 3px 4px);
+  box-shadow: 8px 8px 22px color-mix(in oklch, var(--ink) 24%, transparent);
+}
+
+.book-detail-endpaper {
+  display: grid;
+  place-items: center;
+  margin: 5px;
+  border-radius: 2px 8px 8px 2px;
+  box-shadow: inset 0 0 22px color-mix(in oklch, var(--cognac) 10%, transparent);
+}
+
+.book-detail-cover {
+  transform-origin: 8px center;
+  transform: rotateY(0deg);
+  transform-style: preserve-3d;
+  transition: transform 900ms cubic-bezier(0.16, 1, 0.3, 1) 100ms;
+  backface-visibility: visible;
+  box-shadow: 10px 12px 26px color-mix(in oklch, var(--ink) 28%, transparent);
+}
+
+.book-detail-stage.is-open .book-detail-cover {
+  transform: rotateY(-34deg);
+}
+
+.library-loader {
+  display: grid;
+  min-height: 220px;
+  place-items: center;
+  color: var(--ink-soft);
+}
+
+.library-loader__inner {
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  font-family: var(--font-family-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.library-loader__mark {
+  width: 54px;
+  height: 72px;
+  border: 2px solid var(--moss);
+  border-radius: 3px 8px 8px 3px;
+  background: linear-gradient(90deg, var(--pine) 0 10px, var(--paper) 10px);
+  box-shadow: inset 13px 0 var(--cognac), 8px 9px 0 color-mix(in oklch, var(--ink) 10%, transparent);
+  transform-origin: left bottom;
+  animation: library-book-open 1600ms cubic-bezier(0.16, 1, 0.3, 1) infinite alternate;
+}
+
+@keyframes library-book-open {
+  0%, 18% { transform: perspective(500px) rotateY(0deg) translateY(5px); }
+  78%, 100% { transform: perspective(500px) rotateY(-42deg) translateY(-5px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book-volume,
+  .book-cover,
+  .book-cover-sheen,
+  .book-detail-backdrop,
+  .book-detail-panel,
+  .book-detail-volume,
+  .book-detail-cover {
+    transition-duration: 1ms;
+    transition-delay: 0ms;
+  }
+
+  .library-loader__mark {
+    animation: none;
+  }
+}
