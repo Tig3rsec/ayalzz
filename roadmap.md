@@ -1,0 +1,5 @@
+- [ ] Add a public recommendation form and persistent “Recommended to me” shelf.
+- [ ] Add private, persistent currently-reading status and pages-read progress.
+- [ ] Connect natural-language shelf search to a real AI search function, with local fallback.
+- [ ] Tune the book shelf toward the reference: warm paper/cover tones, visible 3D volumes, and a more tactile hover/open motion.
+- [ ] Verify the recommendation, reading-progress, and search flows, and check the preview build.
